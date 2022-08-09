@@ -31,9 +31,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
+import { defineComponent, reactive, ref, toRefs } from 'vue'
 // 导入一个名为 LoginData 的类
 import { LoginData } from "@/type/login";
+import type { FormInstance } from 'element-plus'
+import { login } from "@/request/api";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
@@ -69,7 +72,42 @@ export default defineComponent({
         },
       ],
     }
-    return { ...toRefs(data), rules }
+
+    // 登录按钮的功能
+    const ruleFormRef = ref<FormInstance>()
+    const router = useRouter()
+    const submitForm = (formEl: FormInstance | undefined) => {
+      // 对表单的内容进行验证   validate 是 element-plus 里 form 里的一个方法
+      if (!formEl) return
+      // valid 为布尔类型，为 true 表示验证成功
+      formEl.validate((valid) => {
+        if (valid) {
+          login(data.ruleForm).then((res)=>{
+            // 登录成功
+            if (res.data.success === true){
+              // 保存 token
+              localStorage.setItem("token", res.data.token)
+              // 跳转到根页面
+              router.push('/')
+            }
+            // 登录失败
+            else {
+              alert('账号或密码错误')
+            }
+          })
+        } else {
+          console.log('错误的提交')
+          return false
+        }
+      })
+    }
+
+    // 重置按钮的功能
+    const resetForm = () => {
+      data.ruleForm.username = "";
+      data.ruleForm.password = ""
+    }
+    return { ...toRefs(data), rules, resetForm, ruleFormRef, submitForm }
   }
 })
 </script>

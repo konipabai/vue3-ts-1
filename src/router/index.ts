@@ -5,7 +5,28 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: HomeView,
+    children:[
+      {
+        path:"goods",
+        name:"goods",
+        meta:{
+          // 用 isShow 来区分他是不是处于 home 页面里左边导航栏的路由
+          isShow:true,
+          title:"商品列表"
+        },
+        component: () => import(/* webpackChunkName: "goods" */ '../views/GoodsView.vue')
+      },
+      {
+        path:"user",
+        name:"user",
+        meta:{
+          isShow:true,
+          title:"用户列表"
+        },
+        component: () => import(/* webpackChunkName: "user" */ '../views/UserView.vue')
+      },
+    ]
   },
   {
     path: '/about',
