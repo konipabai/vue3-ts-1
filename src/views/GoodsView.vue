@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, reactive, toRefs, watch} from 'vue';
+import {computed, defineComponent, onMounted, reactive, toRefs, watch} from 'vue';
 import {getGoodsList} from "@/request/api";
 import {InitData, ListInt} from "@/type/goods";
 
@@ -31,11 +31,15 @@ export default defineComponent({
   setup() {
     const data = reactive(new InitData())
 
-    getGoodsList().then((res) => {
-      data.list = res.data
-      data.selectData.count = res.data.length
+    onMounted(() => {
+      getGoods()
     })
-
+    const getGoods = () => {
+      getGoodsList().then((res) => {
+        data.list = res.data
+        data.selectData.count = res.data.length
+      })
+    }
     const dataList = reactive({
       comList:computed(()=>{
         return data.list.slice(
@@ -78,10 +82,7 @@ export default defineComponent({
     // 监听输入框的两个属性
     watch([()=>data.selectData.title, ()=>data.selectData.introduce], ()=>{
         if (data.selectData.title == "" && data.selectData.introduce == ""){
-          getGoodsList().then((res)=>{
-            data.list = res.data
-            data.selectData.count = res.data.length
-          })
+          getGoods()
         }
     })
 
