@@ -18,7 +18,7 @@ service.interceptors.request.use((config)=>{
     return config
 })
 
-// 相应拦截                         res: 响应完成或者失败的结果
+// 响应拦截                         res: 响应完成或者失败的结果
 service.interceptors.response.use((res)=>{
     const code:number = res.data.code
     if (code != 200) {

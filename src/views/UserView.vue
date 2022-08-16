@@ -68,7 +68,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="updateUser">更改</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="isShow=false">取消</el-button>
       </span>
     </template>
   </el-dialog>

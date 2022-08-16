@@ -6,6 +6,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     name: 'home',
     component: HomeView,
+    redirect: "goods",// 设置重定向，当进入到 / 路由的时候直接跳转到 goods
     children:[
       {
         path:"goods",
@@ -25,6 +26,24 @@ const routes: Array<RouteRecordRaw> = [
           title:"用户列表"
         },
         component: () => import(/* webpackChunkName: "user" */ '../views/UserView.vue')
+      },
+      {
+        path:"role",
+        name:"role",
+        meta:{
+          isShow:true,
+          title:"角色列表"
+        },
+        component: () => import(/* webpackChunkName: "role" */ '../views/RoleView.vue')
+      },
+      {
+        path:"authority",
+        name:"authority",
+        meta:{
+          isShow:false,
+          title:"权限列表列表"
+        },
+        component: () => import(/* webpackChunkName: "authority" */ '../views/AuthorityView.vue')
       },
     ]
   },
@@ -51,4 +70,12 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach((to, from, next)=>{
+  const token: string | null = localStorage.getItem('token')
+  if (!token && to.path !== '/login'){
+    next('/login')
+  }else {
+    next()
+  }
+})
 export default router
